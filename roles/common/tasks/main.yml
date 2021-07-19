@@ -1,0 +1,21 @@
+---
+- name: Update the apt repos and base OS
+  apt:
+      upgrade: dist
+      update_cache: yes
+  become: yes
+  become_user: root
+
+- name: Install some common packages
+  apt:
+      name: "{{ common_packages }}"
+      state: latest
+  become: yes
+  become_user: root
+
+- name: Make sure cloud configured hostname control is not present
+  file:
+    path: /etc/cloud/cloud.cfg.d/07_hostnamefix.cfg
+    state: absent
+  become: yes
+  become_user: root

@@ -3,6 +3,7 @@
     name: "{{ item.name }}"
     password: "{{ item.password | password_hash('sha512', vault_password_salt) }}"
     shell: "{{ item.shell }}"
+    home: "{{ user_home }}/{{ item.name }}"
   loop:
     "{{ users }}"
 

@@ -3,4 +3,36 @@ pip_virtualenv_command: /usr/bin/python3 -m virtualenv
 certbot_virtualenv_package_name: python3-virtualenv
 pip_package: python3-pip
 
-miniconda_version: "4.9.2"
+miniconda_version: "latest"
+miniconda_prefix: "/opt/miniconda3"
+
+#Common packages to install on all of our machines.
+common_packages:
+    - python-is-python3
+    - vim
+    - acl
+    - git
+    - build-essential
+    - python3-dev
+    - libcurl4-openssl-dev
+    - libgnutls28-dev
+    - libssl-dev
+    - python3-virtualenv
+    - python3-pip
+    - htop
+    - nfs-common
+    - atop
+    - speedometer
+    - byobu
+    - apt-transport-https
+    - tar
+    - bzip2
+    - libgl1-mesa-glx
+    - unzip
+    - tree
+    - python3-passlib
+
+attached_volumes:
+  - device: /dev/vdb
+    path: /mnt
+    fstype: ext4
