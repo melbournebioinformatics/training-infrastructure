@@ -1,0 +1,20 @@
+- name: Create users
+  user:
+    name: "{{ item.name }}"
+    password: "{{ item.password | password_hash('sha512', vault_password_salt) }}"
+    shell: "{{ item.shell }}"
+  loop:
+    "{{ users }}"
+
+- name: Ensure sshd allows password auth
+  replace:
+    path: "/etc/ssh/sshd_config"
+    regexp: '^PasswordAuthentication\s+no\s+.*$$'
+    replace: 'PasswordAuthentication yes # set by Ansible'
+  register: __ssh_config_change
+
+- name: Restart sshd for config changes
+  service:
+    name: ssh
+    state: restarted
+  when: __ssh_config_change is changed
