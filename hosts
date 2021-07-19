@@ -1,5 +1,10 @@
-[qiime_hosts]
+[workshop_hosts]
 
 115.146.86.54
 115.146.87.242
 115.146.87.137
+
+[all:vars]
+ansible_host_key_checking=False
+ansible_user=ubuntu
+ansible_ssh_extra_args='-o StrictHostKeyChecking=no'

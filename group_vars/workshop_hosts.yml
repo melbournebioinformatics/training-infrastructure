@@ -1,3 +1,5 @@
+user_home: /mnt/home
+
 users:
   - name: alpha
     shell: /bin/bash
