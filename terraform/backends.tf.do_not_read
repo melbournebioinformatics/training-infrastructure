@@ -1,0 +1,13 @@
+terraform {
+  backend "swift" {
+    container         = "terraform-state"
+    archive_container = "terraform-state-archive"
+    auth_url          = "https://keystone.rc.nectar.org.au:5000/v3/"
+    tenant_id         = 377
+    tenant_name       = "GenomicsVL"
+    project_domain_name = "Default"
+    user_domain_id    = "default"
+    domain_id         = "default"
+    region_name       = "Melbourne"
+  }
+}

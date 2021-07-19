@@ -1,0 +1,4 @@
+users:
+  - name: user1
+    shell: /bin/bash
+    password: "test_password"

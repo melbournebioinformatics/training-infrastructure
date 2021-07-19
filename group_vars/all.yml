@@ -1,0 +1,6 @@
+# Python 3 support
+pip_virtualenv_command: /usr/bin/python3 -m virtualenv
+certbot_virtualenv_package_name: python3-virtualenv
+pip_package: python3-pip
+
+miniconda_version: "4.9.2"

@@ -1,0 +1,16 @@
+users:
+  - name: alpha
+    shell: /bin/bash
+    password: "{{ vault_alpha_password }}"
+  - name: beta
+    shell: /bin/bash
+    password: "{{ vault_beta_password }}"
+  - name: gamma
+    shell: /bin/bash
+    password: "{{ vault_gamma_password }}"
+  - name: delta
+    shell: /bin/bash
+    password: "{{ vault_delta_password }}"
+
+
+    
