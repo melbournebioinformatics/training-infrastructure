@@ -15,4 +15,4 @@ users:
     password: "{{ vault_delta_password }}"
 
 
-    
+shared_data_path: /mnt/shared_data
