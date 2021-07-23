@@ -1,6 +1,7 @@
 locals {
-  count = 3
-  disk_size = 300
+  count = 2
+  disk_size = 500 #GB
+  flavor = "m3.xlarge" #16 core - 32GB RAM.
 
   instances = toset(formatlist("%d", range(local.count)))
   volumes = toset(flatten([ for instance in local.instances : "i${instance}-volume" ]))
@@ -15,7 +16,7 @@ resource "openstack_compute_instance_v2" "test-instance" {
   for_each = local.instances
   name            = "test-i${each.value}"
   image_name      = "NeCTAR Ubuntu 20.04 LTS (Focal) amd64"
-  flavor_name     = "m3.medium"  # 2 vcpu 8 ram, previously m3.small (2 vcpu 4 ram)
+  flavor_name     = local.flavor
   key_pair        = "gcc-2021"
   security_groups = ["SSH", "default"]
   availability_zone = "melbourne-qh2"

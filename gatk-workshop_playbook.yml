@@ -1,8 +1,8 @@
-- hosts: qiime_hosts
+- hosts: gatk_hosts
   become: true
   vars_files:
     - group_vars/workshop_hosts.yml
-    - group_vars/qiime_hosts.yml
+    - group_vars/gatk_hosts.yml
     - group_vars/VAULT
   pre_tasks:
     - name: Attach volume to instance
@@ -46,16 +46,13 @@
           become_user: root
           when: links.stat.islnk is defined and not links.stat.islnk
       when: attached_volumes is defined
-    - name: Copy shared data to tmp
+    - name: Wget reference data
       get_url:
-        url: https://swift.rc.nectar.org.au/v1/AUTH_377/public/qiime2_workshop_data.tgz
-        dest: /tmp/qiime2_workshop_data.tgz
-    - name: Untar the shared data
-      unarchive:
-        src: /tmp/qiime2_workshop_data.tgz
-        dest: /mnt/shared_data/
-        remote_src: yes
+        url: "ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg38/{{ item }}"
+        dest: "{{ shared_data_path }}/{{ item }}"
         mode: 0755
+      loop:
+        "{{ reference_files }}"
     - name: Init conda for all users
       command: "/opt/miniconda3/bin/conda init"
       become: yes
@@ -65,7 +62,7 @@
     - name: Add conda env activation to user's .bashrc
       lineinfile:
         path: "/mnt/home/{{ item.name }}/.bashrc"
-        line: conda activate qiime2-2021.4
+        line: conda activate gatk
       loop:
         "{{ users }}"
       
