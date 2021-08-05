@@ -12,6 +12,7 @@ miniconda_env:
     - bcftools=1.13=h3a49de5_0
     - binutils_impl_linux-64=2.36.1=h193b22a_1
     - binutils_linux-64=2.36=hf3e587d_32
+    - bwa=0.7.17=h5bf99c6_8
     - bwidget=1.9.14=ha770c72_0
     - bzip2=1.0.8=h7f98852_4
     - c-ares=1.17.1=h7f98852_1
