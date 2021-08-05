@@ -13,6 +13,12 @@ users:
   - name: delta
     shell: /bin/bash
     password: "{{ vault_delta_password }}"
+  - name: epsilon
+    shell: /bin/bash
+    password: "{{ vault_epsilon_password }}"
+  - name: zeta
+    shell: /bin/bash
+    password: "{{ vault_zeta_password }}"
 
 
 shared_data_path: /mnt/shared_data
