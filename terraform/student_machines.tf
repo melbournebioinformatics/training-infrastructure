@@ -1,5 +1,5 @@
 locals {
-  count = 2
+  count = 3
   disk_size = 500 #GB
   flavor = "m3.xlarge" #16 core - 32GB RAM.
 
