@@ -32,3 +32,4 @@ override.tf.json
 
 roles/geerlingguy.*
 roles/uchida.*
+roles/galaxyproject.*

@@ -53,6 +53,17 @@
         mode: 0755
       loop:
         "{{ reference_files }}"
+    - name: Download the extras files.
+      get_url: 
+        url: https://swift.rc.nectar.org.au/v1/AUTH_377/public/variant_calling_extra_files.tgz
+        dest: "{{ shared_data_path }}/variant_calling_files_extra.tgz"
+        mode: 0755
+    - name: Unarchive the extra files.
+      unarchive:
+        src: "{{ shared_data_path }}/variant_calling_files_extra.tgz"
+        dest: "{{ shared_data_path }}"
+        remote_src: yes
+        mode: 0755
     - name: Init conda for all users
       command: "/opt/miniconda3/bin/conda init"
       become: yes

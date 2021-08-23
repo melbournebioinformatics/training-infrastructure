@@ -15,7 +15,7 @@ locals {
 resource "openstack_compute_instance_v2" "test-instance" {
   for_each = local.instances
   name            = "test-i${each.value}"
-  image_name      = "NeCTAR Ubuntu 20.04 LTS (Focal) amd64"
+  image_id      = "b1b609d1-c284-4853-8e1b-611d8b5d815d"
   flavor_name     = local.flavor
   key_pair        = "gcc-2021"
   security_groups = ["SSH", "default"]
