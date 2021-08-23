@@ -2,7 +2,7 @@
   become: true
   vars_files:
     - group_vars/workshop_hosts.yml
-    - group_vars/gatk_hosts.yml
+    - group_vars/gatk4_hosts.yml
     - group_vars/VAULT
   pre_tasks:
     - name: Attach volume to instance
@@ -57,7 +57,7 @@
       command: "/opt/miniconda3/bin/conda init"
       become: yes
       become_user: "{{ item.name }}"
-      loop: 
+      loop:
         "{{ users }}"
     - name: Add conda env activation to user's .bashrc
       lineinfile:
@@ -65,4 +65,3 @@
         line: conda activate gatk
       loop:
         "{{ users }}"
-      
