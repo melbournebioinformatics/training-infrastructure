@@ -13,6 +13,11 @@
         path: /mnt/home
         state: directory
         mode: 0755
+    - name: Download GATK4 Python package zip file to ubuntu
+      get_url:
+        url: https://swift.rc.nectar.org.au/v1/AUTH_377/public/gatkPythonPackageArchive.zip
+        dest: "/home/ubuntu/gatkPythonPackageArchive.zip"
+        mode: 0755
   roles:
     - common
     - geerlingguy.pip
@@ -55,7 +60,7 @@
         "{{ reference_files }}"
     - name: Download the extras files.
       get_url: 
-        url: https://swift.rc.nectar.org.au/v1/AUTH_377/public/variant_calling_extra_files.tgz
+        url: https://swift.rc.nectar.org.au/v1/AUTH_377/public/variant_calling_files_extra.tgz
         dest: "{{ shared_data_path }}/variant_calling_files_extra.tgz"
         mode: 0755
     - name: Unarchive the extra files.
