@@ -65,7 +65,7 @@
     - name: Add conda env activation to user's .bashrc
       lineinfile:
         path: "/mnt/home/{{ item.name }}/.bashrc"
-        line: conda activate qiime2-2021.4
+        line: conda activate qiime2-2021.8
       loop:
         "{{ users }}"
       
