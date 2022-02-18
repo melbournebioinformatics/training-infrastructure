@@ -35,5 +35,6 @@ common_packages:
 
 attached_volumes:
   - device: /dev/vdb
+    partition: 1
     path: /mnt
     fstype: ext4

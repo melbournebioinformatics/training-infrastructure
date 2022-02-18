@@ -1,6 +1,6 @@
 locals {
-  count = 2
-  disk_size = 500 #GB
+  count = 10
+  disk_size = 300 #GB
   flavor = "m3.xlarge" #16 core - 32GB RAM.
 
   instances = toset(formatlist("%d", range(local.count)))
@@ -15,7 +15,7 @@ locals {
 resource "openstack_compute_instance_v2" "test-instance" {
   for_each = local.instances
   name            = "test-i${each.value}"
-  image_id      = "b1b609d1-c284-4853-8e1b-611d8b5d815d"
+  image_id        = "356ff1ed-5960-4ac2-96a1-0c0198e6a999"
   flavor_name     = local.flavor
   key_pair        = "gcc-2021"
   security_groups = ["SSH", "default"]
