@@ -1,6 +1,6 @@
 locals {
-  count = 1
-  disk_size = 500 #GB
+  count = 10
+  disk_size = 300 #GB
   flavor = "m3.xlarge" #16 core - 32GB RAM.
 
   instances = toset(formatlist("%d", range(local.count)))
