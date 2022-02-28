@@ -68,4 +68,11 @@
         line: conda activate qiime2-2021.8
       loop:
         "{{ users }}"
+    - name: Create an empty file called test_transfer.txt in each users home
+      copy:
+        src: files/test_transfer.txt
+        dest: "/mnt/home/{{ item.name }}/test_transfer.txt"
+        mode: 0755
+      loop:
+        "{{ users }}"
       
