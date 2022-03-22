@@ -1,6 +1,6 @@
 locals {
   count = 2
-  disk_size = 3000 #GB
+  disk_size = 1000 #GB
   flavour = "m3.xlarge"
   head_flavour = "m3.xlarge"
 
