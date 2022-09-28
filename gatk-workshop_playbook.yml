@@ -78,6 +78,6 @@
     - name: Add conda env activation to user's .bashrc
       lineinfile:
         path: "/mnt/home/{{ item.name }}/.bashrc"
-        line: conda activate gatk
+        line: conda activate gatk4
       loop:
         "{{ users }}"
