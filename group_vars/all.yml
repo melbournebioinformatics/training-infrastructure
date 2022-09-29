@@ -8,7 +8,7 @@ miniconda_prefix: "/opt/miniconda3"
 
 #Common packages to install on all of our machines.
 common_packages:
-    - python-is-python3
+    #- python-is-python3
     - vim
     - acl
     - git
