@@ -1,0 +1,58 @@
+#Hostnames for the workers and head node. The head node will have the workers details put into it's /etc/hosts file and the workers will have the head nodes details put into theirs. If you're using this repo for lots of clusters, then put this into a more specified vars file.
+head_nodes: "{{ groups['head_node'] }}"
+worker_nodes: "{{ groups['worker_nodes'] }}"
+
+#################################################
+# Slurm config for all machines 
+# This is for the slurm.conf file on all nodes.
+#################################################
+
+slurm_nodes:
+    - name: head-node
+      NodeAddr: "{{ hostvars['head-node']['ansible_ssh_host'] }}"
+      CPUs: 8 #Adjust these values to suit your machines
+      RealMemory: 16380
+      State: UNKNOWN
+    - name: worker0
+      NodeAddr: "{{ hostvars['worker0']['ansible_ssh_host'] }}"
+      CPUs: 16
+      RealMemory: 49350
+      State: UNKNOWN
+    - name: worker1
+      NodeAddr: "{{ hostvars['worker1']['ansible_ssh_host'] }}"
+      CPUs: 16
+      RealMemory: 49350
+      State: UNKNOWN
+    - name: worker2
+      NodeAddr: "{{ hostvars['worker2']['ansible_ssh_host'] }}"
+      CPUs: 16
+      RealMemory: 49350
+      State: UNKNOWN    
+slurm_partitions:
+    - name: main
+      nodes: "worker0,worker1,worker2"
+      Default: YES
+      MaxTime: INFINITE
+      State: UP
+
+slurm_config:
+    #SlurmDBd includes
+    AccountingStorageType: accounting_storage/slurmdbd
+    AccountingStorageHost: localhost
+    JobAcctGatherType: jobacct_gather/linux
+    ControlMachine: pulsar-nci-test
+    SlurmctldPidFile: /run/slurmctld.pid
+    SlurmdPidFile: /run/slurmd.pid
+    # SCHEDULING
+    FastSchedule: 2
+    SchedulerType: sched/backfill
+    SelectType: select/cons_res
+    SelectTypeParameters: CR_CPU,CR_LLN #There are lots of options here.. Look at slurm docs for details
+
+slurm_munge_key: files/keys/munge.key #You prolly want to create your own munge key. I've included one here for testing
+
+#sinfo and squeue configs - just aesthetics.. Makes sinfo, squeue and sacct much prettier to look at.
+bashrc_env: |
+  export SINFO_FORMAT="%16n %.12C %.6t"
+  export SQUEUE_FORMAT="%8i %9P %.35j %.9T %8r %19S %.10M %.6m %.3C %.3N %.55Z"
+  export SACCT_FORMAT="jobid%8,partition%9,jobname%30,alloccpus,elapsed,totalcpu,END,state,MaxRSS,ReqMem,NodeList"

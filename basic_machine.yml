@@ -1,0 +1,81 @@
+- hosts: workshop_hosts
+  become: true
+  vars_files:
+    - group_vars/workshop_hosts.yml
+    - group_vars/VAULT
+  # pre_tasks:
+  #   - name: Attach volume to instance
+  #     include_role:
+  #       name: attached-volumes
+  #   - name: create home dir on /mnt
+  #     file:
+  #       path: /mnt/home
+  #       state: directory
+  #       mode: 0755
+  roles:
+    - common
+    #- geerlingguy.pip
+    #- uchida.miniconda
+    - slg.users
+  post_tasks:
+    - name: copy sample 1
+      copy:
+        src: files/sample_1.fastq
+        dest: "/home/{{ item.name }}/sample_1.fastq"
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+      loop: "{{ users }}"
+    - name: copy sample 2
+      copy:
+        src: files/sample_2.fastq
+        dest: "/home/{{ item.name }}/sample_2.fastq"
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+      loop: "{{ users }}"
+    - name: copy data dir
+      copy:
+        src: files/samples
+        dest: "/home/{{ item.name }}/samples"
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+      loop: "{{ users }}"
+    # - name: Move /tmp to other disk
+    #   block:
+    #     - name: Create worker tmpdir on other disk
+    #       file:
+    #         path: /mnt/tmpdisk
+    #         state: directory
+    #         owner: root
+    #         group: root
+    #         mode: '1777'
+    #     - name: stat links
+    #       stat:
+    #         path: /tmp
+    #       register: links
+    #     - name: remove old tmp
+    #       file:
+    #         path: /tmp
+    #         state: absent
+    #       when: links.stat.islnk is defined and not links.stat.islnk
+    #     - name: Link /tmp to /mnt/tmpdisk
+    #       file:
+    #         src: /mnt/tmpdisk
+    #         dest: /tmp
+    #         state: link
+    #       become: yes
+    #       become_user: root
+    #       when: links.stat.islnk is defined and not links.stat.islnk
+    #   when: attached_volumes is defined
+    # - name: Init conda for all users
+    #   command: "/opt/miniconda3/bin/conda init"
+    #   become: yes
+    #   become_user: "{{ item.name }}"
+    #   loop:
+    #     "{{ users }}"
+    # - name: Add conda env activation to user's .bashrc
+    #   lineinfile:
+    #     path: "/mnt/home/{{ item.name }}/.bashrc"
+    #     regexp: "conda activate"
+    #     line: conda activate qiime2-2022.2
+    #   loop:
+    #     "{{ users }}"
