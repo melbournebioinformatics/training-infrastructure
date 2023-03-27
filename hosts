@@ -1,13 +1,8 @@
 [qiime_hosts]
-115.146.87.168
-115.146.85.154
-115.146.85.244
 
 [gatk_hosts]
-115.146.87.26
-115.146.87.154
-115.146.87.68
-115.146.84.141
+
+[gayle_hosts]
 
 [all:vars]
 ansible_host_key_checking=False
