@@ -1,9 +1,9 @@
 - hosts: qiime_hosts
   become: true
   vars_files:
+    - group_vars/VAULT
     - group_vars/workshop_hosts.yml
     - group_vars/qiime_hosts.yml
-    - group_vars/VAULT
   pre_tasks:
     - name: Attach volume to instance
       include_role:

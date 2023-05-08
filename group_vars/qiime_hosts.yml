@@ -1,3 +1,10 @@
+# overwrite vault passwords with second set
+vault_alpha_password: "{{ vault_passwords_alt_2.alpha }}"
+vault_beta_password: "{{ vault_passwords_alt_2.beta }}"
+vault_gamma_password: "{{ vault_passwords_alt_2.gamma }}"
+vault_delta_password: "{{ vault_passwords_alt_2.delta }}"
+vault_epsilon_password: "{{ vault_passwords_alt_2.epsilon }}"
+vault_zeta_password: "{{ vault_passwords_alt_2.zeta }}"
 
 miniconda_env:
   name: qiime2-2021.8
