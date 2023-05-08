@@ -1,0 +1,115 @@
+- hosts: head_node
+  become: true
+  vars_files:
+    - group_vars/all.yml
+    - group_vars/assembly_slurm.yml
+    - group_vars/head_node.yml
+    - group_vars/users.yml
+    - group_vars/VAULT
+  # vars:
+  #   munge_key_hack_force_refresh: true
+  #   users:
+  #   - name: user1
+  #     shell: /bin/bash
+  #     password: "test_password"
+  #   - name: user2
+  #     shell: /bin/bash
+  #     password: "test_password"
+  pre_tasks:
+    - name: Attach volume to instance
+      include_role:
+        name: attached-volumes
+    # - name: Add slurm-drmaa PPA (Ubuntu)
+    #   apt_repository:
+    #     repo: ppa:natefoo/slurm-drmaa
+    #     state: present
+  roles:
+    - insspb.hostname
+    - slg.users
+    - common
+    # - galaxyproject.miniconda
+    # - geerlingguy.nfs
+    # - galaxyproject.slurm
+    # - munge-key-hack
+  post_tasks:
+    # - name: Create conda envs with mamba
+    #   command: >-
+    #     {{ miniconda_prefix }}/bin/mamba create --yes
+    #     {{ '--override-channels --channel' if (item.value.channels | default(miniconda_channels)) else '' }}
+    #     {{ (item.value.channels | default(miniconda_channels)) | join(' --channel ') }}
+    #     --name {{ item.key }}
+    #     {{ item.value.packages | join(' ') }}
+    #   args:
+    #     creates: "{{ miniconda_prefix }}/envs/{{ item.key }}"
+    #   loop: "{{ miniconda_mamba_environments | dict2items }}"
+    # - name: Update conda envs with mamba
+    #   command: >-
+    #     {{ miniconda_prefix }}/bin/mamba install --yes
+    #     {{ '--override-channels --channel' if (item.value.channels | default(miniconda_channels)) else '' }}
+    #     {{ (item.value.channels | default(miniconda_channels)) | join(' --channel ') }}
+    #     --name {{ item.key }}
+    #     {{ item.value.packages | join(' ') }}
+    #   register: __miniconda_conda_install_output
+    #   changed_when: "'All requested packages already installed' not in __miniconda_conda_install_output.stdout"
+    #   loop: "{{ miniconda_conda_environments | dict2items }}"
+    - name: Copy files to shared_data
+      copy:
+        src: "files/assembly_slurm/{{ item }}"
+        dest: "{{ shared_data_path }}/{{ item }}"
+      with_items:
+        - CP041015.1.fasta
+        - b_subtilis_nanopore.fastq.gz
+    - name: Init conda for all users
+      command: "{{ miniconda_prefix }}/bin/conda init"
+      become: yes
+      become_user: "{{ item.name }}"
+      loop: 
+        "{{ users }}"
+    - name: Add conda env activation to user's .bashrc
+      lineinfile:
+        path: "/mnt/home/{{ item.name }}/.bashrc"
+        line: ". {{ miniconda_prefix }}/bin/activate {{ miniconda_prefix }}/envs/{{ conda_env_name }}"
+      loop:
+        "{{ users }}"
+    - name: Reload exportfs
+      command: exportfs -ra
+
+- hosts: worker_nodes
+  become: true
+  vars_files:
+    - group_vars/all.yml
+    - group_vars/assembly_slurm.yml
+    - group_vars/worker_nodes.yml
+    - group_vars/VAULT
+  vars:
+    munge_key_hack_force_refresh: true
+  roles:
+    - insspb.hostname
+    - common
+    - mounts
+    # - galaxyproject.slurm
+    # - munge-key-hack
+
+# - hosts: head_node
+#   become: true
+#   vars_files:
+#     - group_vars/assembly_slurm.yml
+#   tasks:
+#   - name: restart slurmd
+#     service:
+#       name: slurmd
+#       state: restarted
+#   - name: restart slurmctld
+#     service:
+#       name: slurmctld
+#       state: restarted
+#   - name: Resume workers
+#     shell: "scontrol update node={{ worker_nodes | join(',') }} state=resume"
+#   - name: Get sinfo
+#     shell: "sinfo --format='%16n %.12C %.6t'"
+#     register: sinfo_out
+#   - name: Log sinfo
+#     debug:
+#       msg: "{{ sinfo_out.stdout }}"
+
+
