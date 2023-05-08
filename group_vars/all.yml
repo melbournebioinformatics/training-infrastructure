@@ -8,7 +8,7 @@ miniconda_prefix: "/opt/miniconda3"
 
 #Common packages to install on all of our machines.
 common_packages:
-    #- python-is-python3
+    - python-is-python3
     - vim
     - acl
     - git
@@ -38,3 +38,9 @@ attached_volumes:
     partition: 1
     path: /mnt
     fstype: ext4
+
+internal_ssh_keys:
+  training_infrastructure_comms_key:
+    private_key_content: "{{ vault_training_infrastructure_comms_private_key }}"
+    public_key_src: files/keys/training_infrastructure_comms.rsa.pub
+    user: ubuntu

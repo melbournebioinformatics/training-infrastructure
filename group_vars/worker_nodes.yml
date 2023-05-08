@@ -1,0 +1,22 @@
+slurm_roles: ['exec']
+
+add_hosts_head: true
+
+extra_keys:
+  - id: training_infrastructure_comms_key
+    type: public
+  - id: training_infrastructure_comms_key
+    type: private
+
+shared_mounts:
+  - path: /mnt
+    src: "{{ hostvars['head-node']['ansible_ssh_host'] }}:/mnt"
+    fstype: nfs
+    state: mounted
+
+munge_key_hack_slurm_role: worker_node
+
+ssh_config_id_file: ~/.ssh/training_infrastructure_comms_key
+ssh_config_user: ubuntu
+
+ssh_config_hosts: "{{ head_nodes }}"
