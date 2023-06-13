@@ -7,6 +7,9 @@
 # gayle_hosts: list IPs
 [gayle_hosts]
 
+# unix workshop hosts: list IPs
+[workshop_hosts]
+
 # Assembly slurm tutorial: head node + worker nodes
 [head_node]
 # head-node ansible_ssh_host=<ip>

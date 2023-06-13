@@ -35,7 +35,7 @@
     - name: copy data dir
       copy:
         src: files/samples
-        dest: "/home/{{ item.name }}/samples"
+        dest: "/home/{{ item.name }}"
         owner: "{{ item.name }}"
         group: "{{ item.name }}"
       loop: "{{ users }}"
