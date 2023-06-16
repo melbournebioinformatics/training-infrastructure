@@ -1,5 +1,6 @@
 - hosts: gatk_hosts
   become: true
+  become_user: root
   vars_files:
     - group_vars/workshop_hosts.yml
     - group_vars/gatk4_hosts.yml
@@ -13,17 +14,61 @@
         path: /mnt/home
         state: directory
         mode: 0755
+    # - name: Create miniconda installer tempfile
+    #   tempfile:
+    #     prefix: ansible-miniconda-installer.
+    #     suffix: .sh
+    #   register: miniconda_installer_tempfile
+    # - name: debug
+    #   debug:
+    #     msg: "{{ miniconda_installer_tempfile.path }}"
+    # - name: Collect miniconda installer
+    #   become: true
+    #   become_user: root
+    #   get_url:
+    #     url: "https://repo.anaconda.com/miniconda/{{ miniconda_installer }}"
+    #     # url: "https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh"
+    #     dest: "{{ miniconda_installer_tempfile.path }}"
+    #     force: true
+  roles:
+    - common
+    - geerlingguy.pip
+    - galaxyproject.miniconda
+    - slg.users
+  post_tasks:
     - name: Download GATK4 Python package zip file to ubuntu
       get_url:
         url: https://swift.rc.nectar.org.au/v1/AUTH_377/public/gatkPythonPackageArchive.zip
         dest: "/home/ubuntu/gatkPythonPackageArchive.zip"
         mode: 0755
-  roles:
-    - common
-    - geerlingguy.pip
-    - uchida.miniconda
-    - slg.users
-  post_tasks:
+    - name: Copy environment file to /home/ubuntu
+      copy:
+        src: "{{ env_file_src }}"
+        dest: "{{ env_file_path }}"
+    - name: Create conda environment
+      command: "{{ miniconda_prefix }}/bin/mamba env create --file {{ env_file_path }}"
+      args:
+        creates: "{{ miniconda_prefix }}/envs/{{ env_name }}"
+    # - name: Create conda envs with mamba
+    #   command: >-
+    #     {{ miniconda_prefix }}/bin/mamba create --yes
+    #     {{ '--override-channels --channel' if (item.value.channels | default(miniconda_channels)) else '' }}
+    #     {{ (item.value.channels | default(miniconda_channels)) | join(' --channel ') }}
+    #     --name {{ item.key }}
+    #     {{ item.value.packages | join(' ') }}
+    #   args:
+    #     creates: "{{ miniconda_prefix }}/envs/{{ item.key }}"
+    #   loop: "{{ miniconda_mamba_environments | dict2items }}"
+    # - name: Update conda envs with mamba
+    #   command: >-
+    #     {{ miniconda_prefix }}/bin/mamba install --yes
+    #     {{ '--override-channels --channel' if (item.value.channels | default(miniconda_channels)) else '' }}
+    #     {{ (item.value.channels | default(miniconda_channels)) | join(' --channel ') }}
+    #     --name {{ item.key }}
+    #     {{ item.value.packages | join(' ') }}
+    #   register: __miniconda_conda_install_output
+    #   changed_when: "'All requested packages already installed' not in __miniconda_conda_install_output.stdout"
+    #   loop: "{{ miniconda_mamba_environments | dict2items }}"
     - name: Move /tmp to other disk
       block:
         - name: Create worker tmpdir on other disk
@@ -77,7 +122,7 @@
         "{{ users }}"
     - name: Add conda env activation to user's .bashrc
       lineinfile:
-        path: "/mnt/home/{{ item.name }}/.bashrc"
-        line: conda activate gatk4
+        path: "{{ user_home }}/{{ item.name }}/.bashrc"
+        line: conda activate {{ env_name }}
       loop:
-        "{{ users }}"
+        "{{ users }}" 
