@@ -1,6 +1,4 @@
 ---
-# TODO: This needs to be run with local copies of CP041015.1.fasta and b_subtilis_nanopore.fastq.gz
-# or they must be uploaded somewhere so that this playbook can download them
 - hosts: head_node
   become: true
   vars_files:
@@ -48,13 +46,14 @@
       register: __miniconda_conda_install_output
       changed_when: "'All requested packages already installed' not in __miniconda_conda_install_output.stdout"
       loop: "{{ miniconda_mamba_environments | dict2items }}"
-    - name: Copy files to shared_data
-      copy:
-        src: "files/assembly_slurm/{{ item }}"
+    - name: Download files to shared data
+      get_url:
+        url: "https://swift.rc.nectar.org.au/v1/AUTH_377/public/COMP90016/{{ item }}"
         dest: "{{ shared_data_path }}/{{ item }}"
+        mode: 0755
       with_items:
-        - CP041015.1.fasta  # TODO: these files need to be uploaded to object store as they are too large to commit to the github repo
-        - b_subtilis_nanopore.fastq.gz  # TODO: these files need to be uploaded to object store as they are too large to commit to the github repo
+        - CP041015.1.fasta
+        - b_subtilis_nanopore.fastq.gz
     - name: Init conda for all users
       command: "{{ miniconda_prefix }}/bin/conda init"
       become: yes
