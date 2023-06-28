@@ -14,22 +14,6 @@
         path: /mnt/home
         state: directory
         mode: 0755
-    # - name: Create miniconda installer tempfile
-    #   tempfile:
-    #     prefix: ansible-miniconda-installer.
-    #     suffix: .sh
-    #   register: miniconda_installer_tempfile
-    # - name: debug
-    #   debug:
-    #     msg: "{{ miniconda_installer_tempfile.path }}"
-    # - name: Collect miniconda installer
-    #   become: true
-    #   become_user: root
-    #   get_url:
-    #     url: "https://repo.anaconda.com/miniconda/{{ miniconda_installer }}"
-    #     # url: "https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh"
-    #     dest: "{{ miniconda_installer_tempfile.path }}"
-    #     force: true
   roles:
     - common
     - geerlingguy.pip
@@ -49,26 +33,6 @@
       command: "{{ miniconda_prefix }}/bin/mamba env create --file {{ env_file_path }}"
       args:
         creates: "{{ miniconda_prefix }}/envs/{{ env_name }}"
-    # - name: Create conda envs with mamba
-    #   command: >-
-    #     {{ miniconda_prefix }}/bin/mamba create --yes
-    #     {{ '--override-channels --channel' if (item.value.channels | default(miniconda_channels)) else '' }}
-    #     {{ (item.value.channels | default(miniconda_channels)) | join(' --channel ') }}
-    #     --name {{ item.key }}
-    #     {{ item.value.packages | join(' ') }}
-    #   args:
-    #     creates: "{{ miniconda_prefix }}/envs/{{ item.key }}"
-    #   loop: "{{ miniconda_mamba_environments | dict2items }}"
-    # - name: Update conda envs with mamba
-    #   command: >-
-    #     {{ miniconda_prefix }}/bin/mamba install --yes
-    #     {{ '--override-channels --channel' if (item.value.channels | default(miniconda_channels)) else '' }}
-    #     {{ (item.value.channels | default(miniconda_channels)) | join(' --channel ') }}
-    #     --name {{ item.key }}
-    #     {{ item.value.packages | join(' ') }}
-    #   register: __miniconda_conda_install_output
-    #   changed_when: "'All requested packages already installed' not in __miniconda_conda_install_output.stdout"
-    #   loop: "{{ miniconda_mamba_environments | dict2items }}"
     - name: Move /tmp to other disk
       block:
         - name: Create worker tmpdir on other disk
