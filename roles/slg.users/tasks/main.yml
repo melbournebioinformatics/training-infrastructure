@@ -2,7 +2,7 @@
   user:
     name: "{{ item.name }}"
     password: "{{ item.password | password_hash('sha512', vault_password_salt) }}"
-    shell: "{{ item.shell }}"
+    shell: "{{ item.shell|d('/bin/bash') }}"
     home: "{{ user_home }}/{{ item.name }}"
   loop:
     "{{ users }}"
@@ -19,3 +19,20 @@
     name: ssh
     state: restarted
   when: __ssh_config_change is changed
+
+- name: Add some env_vars to user .bashrcs
+  blockinfile:
+    path: "{{ user_home }}/{{ item.name }}/.bashrc"
+    block: |
+      {{ bashrc_env }}
+    marker: "# {mark} MANAGED BY ANSIBLE - DO NOT MODIFY"
+  with_items: "{{ users }}"
+  when: bashrc_env is defined
+
+- name: Add env_vars to ubuntu's .bashrc
+  blockinfile:
+    path: "/home/ubuntu/.bashrc"
+    block: |
+      {{ bashrc_env }}
+    marker: "# {mark} MANAGED BY ANSIBLE - DO NOT MODIFY"
+  when: bashrc_env is defined

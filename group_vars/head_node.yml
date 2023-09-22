@@ -1,0 +1,50 @@
+# slurm_roles: ['controller', 'exec', 'dbd']
+slurm_roles: ['controller', 'exec']
+
+add_hosts_workers: true
+
+shared_data_path: '/mnt/shared'
+
+# attached_volumes:
+#   - device: /dev/vdb
+#     path: /mnt
+#     fstype: ext4
+
+conda_env_name: 'conda-env'
+
+user_home: /mnt/home
+
+miniconda_prefix: /mnt/miniconda3
+
+miniconda_base_env_packages: ['mamba'] # variable in galaxyproject.miniconda, not uchida.miniconda
+miniconda_channels:
+  - bioconda
+  - conda-forge
+  - defaults
+
+miniconda_mamba_environments:
+  "{{ conda_env_name }}":
+    channels:
+      - bioconda
+      - conda-forge
+      - defaults
+    packages:
+      - nanoplot=1.41.0
+      - flye=2.9.1
+      - quast=5.2.0
+
+ssh_config_id_file: ~/.ssh/training_infrastructure_comms_key
+ssh_config_user: ubuntu
+
+ssh_config_hosts: "{{ worker_nodes }}"
+
+extra_keys:
+  - id: training_infrastructure_comms_key
+    type: public
+  - id: training_infrastructure_comms_key
+    type: private
+
+nfs_exports:
+    - "/mnt  *(rw,async,no_root_squash,no_subtree_check)"
+
+munge_key_hack_slurm_role: head_node

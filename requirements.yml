@@ -4,3 +4,10 @@
   version: 0.3.0
 - src: galaxyproject.cvmfs
   version: 0.2.14
+- name: galaxyproject.miniconda # from uchida.miniconda, maintained by galaxyproject
+  version: 0.3.0
+- name: galaxyproject.slurm
+  version: 1.0.1
+- src: insspb.hostname
+- name: geerlingguy.nfs
+  version: 1.6.0

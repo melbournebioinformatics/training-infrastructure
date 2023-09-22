@@ -1,5 +1,5 @@
 locals {
-  count = 2
+  count = 3
   disk_size = 1000 #GB
   flavour = "m3.xlarge"
   head_flavour = "m3.xlarge"
@@ -17,7 +17,7 @@ resource "openstack_compute_instance_v2" "Ass-cluster-head" {
   name            = "Ass-cluster-head"
   image_id        = "356ff1ed-5960-4ac2-96a1-0c0198e6a999"
   flavor_name     = local.head_flavour
-  key_pair        = "gcc-2021"
+  key_pair        = "gvl-students"
   security_groups = ["SSH", "default"]
   availability_zone = "melbourne-qh2"
 }
@@ -32,8 +32,8 @@ resource "openstack_blockstorage_volume_v2" "Ass-cluster-head-volume" {
 
 # Head volume attachment
 resource "openstack_compute_volume_attach_v2" "Ass-cluster-head-volume-attachment" {
-  instance_id     = "Ass-cluster-head"
-  volume_id       = "Ass-cluster-head-volume"
+  instance_id = "${openstack_compute_instance_v2.Ass-cluster-head.id}"
+  volume_id   = "${openstack_blockstorage_volume_v2.Ass-cluster-head-volume.id}"
 }
 
 # Worker Instances
@@ -42,7 +42,7 @@ resource "openstack_compute_instance_v2" "Ass-cluster-worker" {
   name            = "Ass-cluster-worker-${each.value}"
   image_id        = "356ff1ed-5960-4ac2-96a1-0c0198e6a999"
   flavor_name     = local.flavour
-  key_pair        = "gcc-2021"
+  key_pair        = "gvl-students"
   security_groups = ["SSH", "default"]
   availability_zone = "melbourne-qh2"
 }

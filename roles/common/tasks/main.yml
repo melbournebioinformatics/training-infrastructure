@@ -27,4 +27,18 @@
     mode: 0755
   become: yes
   when: shared_data_path is defined
-  
+
+- name: Add hosts to /etc/hosts
+  import_tasks: add_hosts.yml
+  vars:
+    hosts_filename: "/etc/hosts"
+
+- name: Add extra ssh keys
+  include_tasks: extra_keys.yml
+  loop: "{{ extra_keys }}"
+  loop_control:
+    loop_var: extra_key
+
+- name: Add ssh config
+  import_tasks: ssh_config.yml
+  when: ssh_config_hosts is defined

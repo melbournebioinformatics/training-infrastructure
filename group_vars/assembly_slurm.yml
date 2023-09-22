@@ -37,10 +37,10 @@ slurm_partitions:
 
 slurm_config:
     #SlurmDBd includes
-    AccountingStorageType: accounting_storage/slurmdbd
-    AccountingStorageHost: localhost
-    JobAcctGatherType: jobacct_gather/linux
-    ControlMachine: pulsar-nci-test
+    # AccountingStorageType: accounting_storage/slurmdbd
+    # AccountingStorageHost: localhost
+    # JobAcctGatherType: jobacct_gather/linux
+    ControlMachine: head-node
     SlurmctldPidFile: /run/slurmctld.pid
     SlurmdPidFile: /run/slurmd.pid
     # SCHEDULING
@@ -49,7 +49,9 @@ slurm_config:
     SelectType: select/cons_res
     SelectTypeParameters: CR_CPU,CR_LLN #There are lots of options here.. Look at slurm docs for details
 
-slurm_munge_key: files/keys/munge.key #You prolly want to create your own munge key. I've included one here for testing
+slurm_database_user: slurm
+
+slurm_munge_key_do_not_decrypt: files/keys/munge.key #You prolly want to create your own munge key. I've included one here for testing
 
 #sinfo and squeue configs - just aesthetics.. Makes sinfo, squeue and sacct much prettier to look at.
 bashrc_env: |

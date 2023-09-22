@@ -1,0 +1,35 @@
+- name: Stat munge key
+  stat:
+    path: /etc/munge/munge.key
+  register: munge_key
+- name: Stat shared directory
+  stat:
+    path: /mnt/shared/.munge_key
+  register: munge_key_shared_dir
+- name: head node creation tasks
+  block:
+  - name: Create munge key
+    command: "create-munge-key -r{% if munge_key.stat.exists %} -f{% endif %}"
+    notify:
+      - restart munge
+      - restart slurmd
+      - restart slurmctld
+  - name: Create dir for munge key copy
+    file:
+      path: /mnt/shared/.munge_key
+      state: directory
+  - name: Copy munge key to shared dir
+    shell: cp /etc/munge/munge.key /mnt/shared/.munge_key/munge.key
+  when: munge_key_hack_slurm_role == 'head_node' and ((not munge_key.stat.exists) or (not munge_key_shared_dir.stat.exists) or munge_key_hack_force_refresh|d(false))
+- name: worker node tasks
+  block:
+    - name: Copy munge key to /etc/munge
+      shell: cp /mnt/shared/.munge_key/munge.key /etc/munge; chmod 400 /etc/munge/munge.key; chown munge:munge /etc/munge/munge.key
+      notify:
+        - restart munge
+        - restart slurmd
+        - restart slurmctld
+  when: munge_key_hack_slurm_role == 'worker_node' and ((not munge_key.stat.exists) or munge_key_hack_force_refresh|d(false))
+  
+
+
