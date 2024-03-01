@@ -16,9 +16,20 @@
   roles:
     - common
     - geerlingguy.pip
-    - uchida.miniconda
+    - galaxyproject.miniconda
     - slg.users
   post_tasks:
+    - name: Get qiime2 amplicon conda yml file
+      get_url:
+        url: "https://data.qiime2.org/distro/amplicon/qiime2-amplicon-2023.9-py38-linux-conda.yml"
+        dest: /home/ubuntu/qiime2-amplicon-2023.9-py38-linux-conda.yml
+    - name: Create environment
+      command: 
+        cmd: >-
+          {{ miniconda_prefix }}/bin/conda env create --yes
+          -n {{ env_name }} --file /home/ubuntu/qiime2-amplicon-2023.9-py38-linux-conda.yml
+        creates: "{{ miniconda_prefix }}/envs/qiime2-amplicon-2023.9"
+
     - name: Move /tmp to other disk
       block:
         - name: Create worker tmpdir on other disk
@@ -48,7 +59,7 @@
       when: attached_volumes is defined
     - name: Copy shared data to tmp
       get_url:
-        url: https://swift.rc.nectar.org.au/v1/AUTH_377/public/qiime2_workshop_data.tgz
+        url: https://swift.rc.nectar.org.au/v1/AUTH_377/public/qiime2_shared_data_20231113.tgz
         dest: /tmp/qiime2_workshop_data.tgz
     - name: Untar the shared data
       unarchive:
@@ -64,14 +75,14 @@
         "{{ users }}"
     - name: Add conda env activation to user's .bashrc
       lineinfile:
-        path: "/mnt/home/{{ item.name }}/.bashrc"
-        line: conda activate qiime2-2021.8
+        path: "{{ user_home }}/{{ item.name }}/.bashrc"
+        line: "conda activate {{ env_name }}"
       loop:
         "{{ users }}"
     - name: Create an empty file called test_transfer.txt in each users home
       copy:
         src: files/test_transfer.txt
-        dest: "/mnt/home/{{ item.name }}/test_transfer.txt"
+        dest: "{{ user_home }}/{{ item.name }}/test_transfer.txt"
         mode: 0755
       loop:
         "{{ users }}"
