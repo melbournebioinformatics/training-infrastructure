@@ -32,6 +32,7 @@ common_packages:
     - tree
     - python3-passlib
     - screen
+    - parallel
 
 attached_volumes:
   - device: /dev/vdb
