@@ -7,17 +7,24 @@
 # gayle_hosts: list IPs
 [gayle_hosts]
 
+# qiime_hosts: list IPs
+[qiime_hosts]
+
 # unix workshop hosts: list IPs
-[workshop_hosts]
+[unix_hosts]
 
 # Assembly slurm tutorial: head node + worker nodes
 [head_node]
-# head-node ansible_ssh_host=<ip>
+#head-node ansible_ssh_host=115.146.87.229
 
 [worker_nodes]
-# worker0 ansible_ssh_host=<ip>
-# worker1 ansible_ssh_host=<ip>
-# worker2 ansible_ssh_host=<ip>
+#worker0 ansible_ssh_host=115.146.86.141
+#worker1 ansible_ssh_host=115.146.86.37
+#worker2 ansible_ssh_host=115.146.84.75
+
+# containers_hosts: list IPs
+[containers_hosts]
+
 
 [all:vars]
 ansible_host_key_checking=False

@@ -1,11 +1,12 @@
 locals {
-  count = 3
+  count = 0
   disk_size = 300 #GB
   flavor = "m3.xlarge" #16 core - 32GB RAM.
   label = "qiime"
   key_pair = "gvl-students"
 
   instances = toset(formatlist("%d", range(local.count)))
+  # instances = toset(["0", "2", "3", "4"])  # refer to instances individually if needed
   volumes = toset(flatten([ for instance in local.instances : "i${instance}-volume" ]))
   attachments = toset(flatten([ for instance in local.instances : {
       instance = instance
@@ -25,11 +26,11 @@ resource "openstack_compute_instance_v2" "test-instance" {
 }
 
 # Volumes
-resource "openstack_blockstorage_volume_v2" "test-volume" {
+resource "openstack_blockstorage_volume_v3" "test-volume" {
   for_each = local.volumes
   availability_zone = "melbourne-qh2"
-  name        = each.value
-  description = "Student test volume"
+  name        = "${local.label}-i${each.value}-volume"
+  description = "qiime tutorial VM volume"
   size        = local.disk_size
 }
 
@@ -37,7 +38,7 @@ resource "openstack_blockstorage_volume_v2" "test-volume" {
 resource "openstack_compute_volume_attach_v2" "attach-dev-volume-to-dev" {
   for_each = { for idx in local.attachments: idx.instance => idx }
   instance_id = openstack_compute_instance_v2.test-instance[each.value.instance].id
-  volume_id   = openstack_blockstorage_volume_v2.test-volume[each.value.volume].id
+  volume_id   = openstack_blockstorage_volume_v3.test-volume[each.value.volume].id
 }
 
 output "instance_ip_address" {

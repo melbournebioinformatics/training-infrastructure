@@ -1,0 +1,30 @@
+- hosts: unix_hosts
+  become: true
+  vars_files:
+    - group_vars/unix_hosts.yml
+    - group_vars/VAULT
+  roles:
+    - common
+    - slg.users
+  post_tasks:
+    - name: copy sample 1
+      copy:
+        src: files/sample_1.fastq
+        dest: "/home/{{ item.name }}/sample_1.fastq"
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+      loop: "{{ users }}"
+    - name: copy sample 2
+      copy:
+        src: files/sample_2.fastq
+        dest: "/home/{{ item.name }}/sample_2.fastq"
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+      loop: "{{ users }}"
+    - name: copy data dir
+      copy:
+        src: files/samples
+        dest: "/home/{{ item.name }}"
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+      loop: "{{ users }}"
