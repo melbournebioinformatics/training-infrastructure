@@ -12,10 +12,6 @@
 
 # unix workshop hosts: list IPs
 [unix_hosts]
-115.146.85.139
-115.146.84.105
-115.146.87.202
-115.146.87.128
 
 # Assembly slurm tutorial: head node + worker nodes
 [head_node]
