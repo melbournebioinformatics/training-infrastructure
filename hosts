@@ -15,12 +15,12 @@
 
 # Assembly slurm tutorial: head node + worker nodes
 [head_node]
-#head-node ansible_ssh_host=115.146.87.229
+head-node ansible_ssh_host=115.146.87.44
 
 [worker_nodes]
-#worker0 ansible_ssh_host=115.146.86.141
-#worker1 ansible_ssh_host=115.146.86.37
-#worker2 ansible_ssh_host=115.146.84.75
+worker0 ansible_ssh_host=115.146.85.0
+worker1 ansible_ssh_host=115.146.85.186
+worker2 ansible_ssh_host=115.146.86.156
 
 # containers_hosts: list IPs
 [containers_hosts]

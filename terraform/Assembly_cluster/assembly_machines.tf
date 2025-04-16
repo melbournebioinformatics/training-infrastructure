@@ -1,5 +1,5 @@
 locals {
-  count = 0
+  count = 3
   disk_size = 1000 #GB
   flavour = "m3.xlarge"
   head_flavour = "m3.xlarge"
@@ -23,7 +23,7 @@ resource "openstack_compute_instance_v2" "Ass-cluster-head" {
 }
 
 # Head Volume
-resource "openstack_blockstorage_volume_v2" "Ass-cluster-head-volume" {
+resource "openstack_blockstorage_volume_v3" "Ass-cluster-head-volume" {
   availability_zone = "melbourne-qh2"
   name            = "Ass-cluster-head-volume"
   description     = "Assembly cluster head volume for NFS"
@@ -33,7 +33,7 @@ resource "openstack_blockstorage_volume_v2" "Ass-cluster-head-volume" {
 # Head volume attachment
 resource "openstack_compute_volume_attach_v2" "Ass-cluster-head-volume-attachment" {
   instance_id = "${openstack_compute_instance_v2.Ass-cluster-head.id}"
-  volume_id   = "${openstack_blockstorage_volume_v2.Ass-cluster-head-volume.id}"
+  volume_id   = "${openstack_blockstorage_volume_v3.Ass-cluster-head-volume.id}"
 }
 
 # Worker Instances
