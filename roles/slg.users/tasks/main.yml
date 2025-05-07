@@ -1,7 +1,7 @@
 - name: Create users
   user:
     name: "{{ item.name }}"
-    password: "{{ item.password | password_hash('sha512', vault_password_salt) }}"
+    password: "{{ item.password | password_hash('md5') }}"
     shell: "{{ item.shell|d('/bin/bash') }}"
     home: "{{ user_home }}/{{ item.name }}"
   loop:
