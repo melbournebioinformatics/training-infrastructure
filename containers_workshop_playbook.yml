@@ -1,0 +1,38 @@
+- hosts: containers_hosts
+  become: true
+  vars_files:
+    - group_vars/VAULT
+    - group_vars/users.yml
+  vars:
+    - vm_index: "{{ groups['containers_hosts'].index(inventory_hostname ) | int }}"
+    - users: "{{ [__users[(vm_index | int)]] }}"
+    - docker_users: "{{ (users | map(attribute='name') | list) + ['ubuntu'] }}"
+  pre_tasks:
+    - name: Add admin key for ubuntu
+      authorized_key:
+        user: "ubuntu"
+        key: "{{ lookup('file', 'keys/ct_admin_key.pub') }}"
+        state: present
+  roles:
+    - common
+    - slg.users
+    - geerlingguy.docker
+    - usegalaxy_eu.apptainer
+  
+# iterate through hosts again and save usernames/passwords to a local CSV
+- hosts: localhost
+  vars_files:
+    - group_vars/VAULT
+    - group_vars/users.yml
+  tasks:
+  - name: Create header line
+    lineinfile:
+      path: 'containers_tutorial_usernames.csv'
+      line: 'IP,Username,Password'
+      create: true
+  - name: Create entries for each VM
+    lineinfile:
+      path: 'containers_tutorial_usernames.csv'
+      line: "{{ item }},{{ __users[( groups['containers_hosts'].index(item) | int)]['name'] }},{{ __users[( groups['containers_hosts'].index(item) | int)]['password'] }}"
+    with_items: "{{ groups['containers_hosts'] }}"
+

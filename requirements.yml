@@ -11,3 +11,7 @@
 - src: insspb.hostname
 - name: geerlingguy.nfs
   version: 1.6.0
+- src: usegalaxy_eu.apptainer
+  version: 0.0.1
+- src: geerlingguy.docker  # TODO: test upgrading to latest version
+  version: 7.4.1

@@ -13,6 +13,13 @@
   become: yes
   become_user: root
 
+- name: Install some extra packages for group
+  apt:
+      name: "{{ group_packages }}"
+      state: latest
+  become: yes
+  become_user: root
+
 - name: Make sure cloud configured hostname control is not present
   file:
     path: /etc/cloud/cloud.cfg.d/07_hostnamefix.cfg
